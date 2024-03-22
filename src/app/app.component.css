@@ -1,0 +1,37 @@
+:host {
+  max-width: 1280px;
+  padding: 2rem;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background: #F2F2F2;
+}
+
+tr:nth-child(odd) {
+  background: #FFF;
+}
+
+th, td {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+table {
+  margin: 0 auto;
+}
+.container {
+  margin-top: 30px;
+}
+
+.add-car {
+  margin-bottom: 30px;
+}
+
+.list-car {
+  margin-bottom: 50px;
+}
+
+.btn-add-car {
+  margin-right: 10px;
+}

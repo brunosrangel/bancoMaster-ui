@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { MatDialog } from '@angular/material/dialog';
-import { EditFormComponent } from '../edit-form/edit-form.component';
+import {Rotas} from '../rotas-model'
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-table',
@@ -10,34 +10,47 @@ import { EditFormComponent } from '../edit-form/edit-form.component';
 })
 export class TableComponent implements OnInit {
   dataSource: any[] = [];
-  displayedColumns: string[] = ['origem', 'destino', 'preco', 'acoes'];
+   rota = {} as Rotas;
+  _rotas : Rotas[] = [];
 
-  constructor(private apiService: ApiService, public dialog: MatDialog) { }
 
-  ngOnInit(): void {
+  constructor(private apiService: ApiService) { }
+
+  ngOnInit(){
     this.loadData();
+
   }
 
   loadData() {
-    this.apiService.getData().subscribe(data => {
+    this.apiService.getData().subscribe(data =>{
       this.dataSource = data;
-    });
+    }
+
+    );
   }
 
-  edit(element: any) {
-    const dialogRef = this.dialog.open(EditFormComponent, {
-      width: '400px',
-      data: { item: element }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.apiService.updateData(element.id, result).subscribe(() => {
-          this.loadData();
-        });
-      }
-    });
+  // copia Tarefa para ser editada.
+  editTasks(rota: Rotas) {
+    this.rota = { ...rota }
   }
+
+  saveTask(form: NgForm) {
+    if (this.rota.idrota !== undefined) {
+      this.apiService.updateData(this.rota).subscribe(() => {
+        this.cleanForm(form);
+      });
+    } else {
+      this.apiService.saveRoute(this.rota).subscribe(() => {
+        this.cleanForm(form);
+      });
+    }
+  }
+    // limpa o formulario
+    cleanForm(form: NgForm) {
+      this.loadData();
+      form.resetForm();
+      this.rota = {} as Rotas;
+    }
 
   delete(element: any) {
     if (confirm('Tem certeza que deseja excluir este item?')) {

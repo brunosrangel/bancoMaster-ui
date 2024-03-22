@@ -1,24 +1,65 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient , HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable , catchError, retry, throwError} from 'rxjs';
+import { Consulta, Rotas } from './rotas-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  apiUrl = 'https://sua-api.com'; // Substitua pela URL da sua API
+  apiUrl = 'https://localhost:7282/api/Rotas';
 
   constructor(private http: HttpClient) { }
 
-  getData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/dados`);
+  // Headers
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+
+}
+
+  getData(): Observable<Rotas[]> {
+    return this.http.get<Rotas[]>(`${this.apiUrl}`,this.httpOptions);
   }
 
-  updateData(id: number, newData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/dados/${id}`, newData);
+  updateData(rota:Rotas): Observable<any> {
+    return this.http.put<Rotas>(`${this.apiUrl}/${rota.idRota}`, JSON.stringify(rota), this.httpOptions);
+  }
+  saveRoute(rota:Rotas): Observable<Rotas> {
+    return this.http.post<Rotas>(this.apiUrl, JSON.stringify(rota), this.httpOptions)
+      .pipe(
+        retry(2),
+        catchError(this.handleError)
+      )
+  }
+  deleteData(rota:Rotas): Observable<Rotas> {
+
+    return this.http.delete<Rotas>(`${this.apiUrl}/${rota.idRota}`)
+    .pipe(
+      retry(2),
+      catchError(this.handleError)
+    )
   }
 
-  deleteData(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/dados/${id}`);
+  consultaRotaMaisBarata(_consulta: Consulta):Observable<any>{
+    let queryParams = new HttpParams().append('origem', _consulta.origem);
+    queryParams.append('destino', _consulta.destino)
+
+    return this.http.get<Rotas[]>(`${this.apiUrl}/'ConsultarRotaMaisBarata'`
+    , {params: queryParams});
+
+
   }
+
+  handleError(error: HttpErrorResponse) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Erro ocorreu no lado do client
+      errorMessage = error.error.message;
+    } else {
+      // Erro ocorreu no lado do servidor
+      errorMessage = `Código do erro: ${error.status}, ` + `menssagem: ${error.message}`;
+    }
+    console.log(errorMessage);
+    return throwError(errorMessage);
+  };
 }
