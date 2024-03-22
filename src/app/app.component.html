@@ -3,8 +3,9 @@
     <li class="breadcrumb-item active" aria-current="page">Gerenciamento de Rotas</li>
   </ol>
 </nav>
+
 <div class="container">
-  <div class="card list-car">
+ <div class="card list-car">
     <h5 class="card-header">Lista de Rotas</h5>
     <div class="card-body">
       <table class="table">
@@ -34,7 +35,36 @@
     </div>
   </div>
 
+  <div class="card add-car">
+    <h5 class="card-header"> Rota mais Barata</h5>
 
+    <div class="card-body">
+      <form id="add-form-rota" (ngSubmit)="f1.form.valid && rotaMaisBarata(f1)" #f1="ngForm" novalidate>
+        <div class="form-group">
+          <label for="model">Origem</label>
+          <input type="text" [(ngModel)]="_consultarRotas.origem" id="model" name="model" #model="ngModel" required
+            class="form-control" [ngClass]="{ 'is-invalid': f1.submitted && model.invalid }"
+            placeholder="Digite a Origem">
+           <div *ngIf="f1.submitted && model.invalid" class="invalid-feedback">
+            <div *ngIf="model.errors">Origem é obrigatório</div>
+          </div>
+        </div>
+        <div class="form-group">
+                <label for="color">Destino</label>
+                <input type="text" [(ngModel)]="_consultarRotas.destino" id="destino" name="destino" #color="ngModel" required class="form-control"
+                [ngClass]="{ 'is-invalid': f1.submitted && color.invalid }" placeholder="Digite o Destino">
+                <div *ngIf="f1.submitted && color.invalid" class="invalid-feedback">
+                    <div *ngIf="color.errors">destino é obrigatória</div>
+                </div>
+            </div>
+            <div>
+              <label for="model">{{ resposta }}</label>
+                      </div>
+        <button type="submit" class="btn btn-primary btn-add-car">Pesquisar</button>
+        <button type="reset" class="btn btn-secondary btn-add-car" (click)="cleanForm(f1)">Cancelar</button>
+      </form>
+    </div>
+  </div>
 
   <div class="card add-car">
     <h5 class="card-header"> Adicionar/Atualizar carro</h5>
@@ -46,23 +76,20 @@
           <input type="text" [(ngModel)]="rota.origem" id="model" name="model" #model="ngModel" required
             class="form-control" [ngClass]="{ 'is-invalid': f.submitted && model.invalid }"
             placeholder="Digite a Origem">
-          <!-- <input type="text" [(ngModel)]="task.descricaoTarefa" id="model" name="model" #model="ngModel" required
-            class="form-control" [ngClass]="{ 'is-invalid': f.submitted && model.invalid }"
-            placeholder="Digite a Descricao"> -->
-          <div *ngIf="f.submitted && model.invalid" class="invalid-feedback">
+           <div *ngIf="f.submitted && model.invalid" class="invalid-feedback">
             <div *ngIf="model.errors">Origem é obrigatório</div>
           </div>
         </div>
         <div class="form-group">
-                <label for="color">Cor</label>
-                <input type="text" [(ngModel)]="rota.destino" id="color" name="color" #color="ngModel" required class="form-control" [ngClass]="{ 'is-invalid': f.submitted && color.invalid }" placeholder="Digite a cor">
+                <label for="color">Destino</label>
+                <input type="text" [(ngModel)]="rota.destino" id="color" name="color" #color="ngModel" required class="form-control" [ngClass]="{ 'is-invalid': f.submitted && color.invalid }" placeholder="Digite o Destino">
                 <div *ngIf="f.submitted && color.invalid" class="invalid-feedback">
                     <div *ngIf="color.errors">destino é obrigatória</div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="price">Preço</label>
-                <input type="number" [(ngModel)]="rota.valor" id="price" name="price" #price="ngModel" required class="form-control" [ngClass]="{ 'is-invalid': f.submitted && price.invalid }" placeholder="Digite o preço">
+                <input type="number" [(ngModel)]="rota.valor" id="price" name="price" #price="ngModel" required class="form-control" [ngClass]="{ 'is-invalid': f.submitted && price.invalid }" placeholder="Digite o Valor">
                 <div *ngIf="f.submitted && price.invalid" class="invalid-feedback">
                     <div *ngIf="price.errors">Preço é obrigatório</div>
                 </div>
@@ -72,4 +99,5 @@
       </form>
     </div>
   </div>
+
 </div>
